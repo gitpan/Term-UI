@@ -9,13 +9,12 @@ use strict;
 BEGIN {
     use vars        qw[$VERSION $AUTOREPLY $VERBOSE $INVALID];
     $VERBOSE    =   1;
-    $VERSION    =   0.02;    
+    $VERSION    =   0.03;    
     $INVALID    =   loc('Invalid selection, please try again: ');
 }
 
 push @Term::ReadLine::Stub::ISA, __PACKAGE__
         unless grep { $_ eq __PACKAGE__ } @Term::ReadLine::Stub::ISA;
-
 
 sub get_reply {
     my $term = shift;
@@ -38,11 +37,11 @@ sub get_reply {
     if( @{$args->{choices}} ) {
         my $i;
 
-        $args->{prompt} =
+        $args->{print_me} =
             join "\n", map( {$i++;
                              $args->{prompt_add} = $i if $_ eq $args->{default};
                              sprintf "%3s> %-s", $i, $_ ;
-                       } @{$args->{choices}} ), $args->{prompt};
+                       } @{$args->{choices}} );
 
         $args->{allow} = 1;
 
@@ -95,6 +94,8 @@ sub _tt_readline {
     my $term = shift;
     my %hash = @_;
 
+    local $Params::Check::VERBOSE = 0;
+
     my $tmpl = {
         default     => { default => undef,  strict_type => 1 },
         prompt      => { default => '',     strict_type => 1, required => 1 },
@@ -102,16 +103,21 @@ sub _tt_readline {
         multi       => { default => 0,      allow => [0, 1] },
         allow       => { default => qr/.*/ },
         prompt_add  => { default => '' },
+        print_me    => { default => '' },
     };
 
     my $args = check( $tmpl, \%hash, $VERBOSE ) or return undef;
+
+    ### prompts for Term::ReadLine can't be longer than one line, or
+    ### it can display wonky on something terminals.
+    print "$args->{print_me}\n" if $args->{print_me};
 
     if ($AUTOREPLY) {
         warn loc(   q[You have '%1' set to true, but did not provide a default!],
                     $AUTOREPLY )
                         if( !defined $args->{default} && $VERBOSE);
 
-        print "$args->{prompt}\n";
+        print "$args->{prompt} $args->{default}\n";
         return $args->{default}
     }
 
@@ -131,7 +137,7 @@ sub _tt_readline {
                         defined
                     } map {
                         length $_ ? /\D/
-                            ? check( { tmp => {allow => $args->{allow}} },
+                            ? check( { tmp => {allow => \@list} },
                                      { tmp => $_ } )
                                 ? $_
                                 : undef
@@ -166,9 +172,9 @@ sub parse_options {
     my $return = {};
 
     ### there's probably a more elegant way to do this... ###
-    while ( $input =~ s/--?([-\w]+=("|').+?\2)\s*//   or
-            $input =~ s/--?([-\w]+=\S+)\s*//          or
-            $input =~ s/--?([-\w]+)\s*//
+    while ( $input =~ s/--?([-\w]+=("|').+?\2)(?:\Z|\s+)//  or
+            $input =~ s/--?([-\w]+=\S+)(?:\Z|\s+)//         or
+            $input =~ s/--?([-\w]+)(?:\Z|\s+)//
     ) {
         my $match = $1;
 
@@ -276,7 +282,7 @@ C<enter> or if $AUTOREPLY is set to true. This parameter is optional.
 =item allow
 
 A handler you can specify to check the reply against. This can be any
-of the types that the Tools::Check C<check> function allows, so please
+of the types that the Params::Check C<check> function allows, so please
 refer to that manpage for details. This parameter is optional.
 
 =back
