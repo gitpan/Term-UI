@@ -9,7 +9,7 @@ use strict;
 BEGIN {
     use vars        qw[$VERSION $AUTOREPLY $VERBOSE $INVALID];
     $VERBOSE    =   1;
-    $VERSION    =   0.03;    
+    $VERSION    =   '0.04';    
     $INVALID    =   loc('Invalid selection, please try again: ');
 }
 
@@ -53,6 +53,10 @@ sub get_reply {
                                 ? ' ['. $args->{prompt_add} . ']: '
                                 : ' ';
 
+    ### you have a fixed list of choices? that overrides any allow
+    ### handler
+    $args->{allow} = $args->{choices} if scalar @{$args->{choices}};
+
     return _tt_readline( $term, %$args );
 
 } #_get_reply
@@ -67,7 +71,7 @@ sub ask_yn {
         multi       => { default => 0,                      no_override => 1 },
         choices     => { default => [qw|y n|],              no_override => 1 },
         prompt_add  => { default => '',                     no_override => 1 },
-        allow       => { default => [qr/^y(?:es)?$/i, qr/^n(?:o)?$/],
+        allow       => { default => [qr/^y(?:es)?$/i, qr/^n(?:o)?$/i],
                          no_override => 1
                        },
     };
@@ -123,7 +127,15 @@ sub _tt_readline {
 
     my @list = @{$args->{choices}};
     LOOP: {
-        my $answer  = $term->readline( $args->{prompt} );
+        
+        ### annoying bug in T::R::Perl that mucks up lines with a \n
+        ### in them;
+        my @lines = split "\n", $args->{prompt};
+        
+        my $prompt = pop @lines;
+        print "$_\n" for @lines;
+        
+        my $answer  = $term->readline($prompt);
         $answer     = $args->{default} unless length $answer;
 
         $term->addhistory( $answer ) if length $answer and !$AUTOREPLY;
@@ -137,7 +149,7 @@ sub _tt_readline {
                         defined
                     } map {
                         length $_ ? /\D/
-                            ? check( { tmp => {allow => \@list} },
+                            ? check( { tmp => { allow => $args->{allow} } },
                                      { tmp => $_ } )
                                 ? $_
                                 : undef
@@ -300,7 +312,7 @@ A string containing the question you want to ask,
 =item default
 
 The default answer -- This is the answer picked if the user just hits
-C<enter> or if $AUTOREPLY is set to true. This paramter is optional.
+C<enter> or if $AUTOREPLY is set to true. This parameter is optional.
 
 =back
 
@@ -350,7 +362,7 @@ global variables:
 
 =head2 $Term::UI::VERBOSE
 
-This controls whether Term::UI will issue warnings and explenations
+This controls whether Term::UI will issue warnings and explanations
 as to why certain things may have failed. If you set it to 0,
 Term::UI will not output any warnings.
 The default is 1;
@@ -358,7 +370,7 @@ The default is 1;
 =head2 $Term::UI::AUTOREPLY
 
 This will make every question be answered by the default, and warn if
-there was no default provided. This is particularly usefull if your
+there was no default provided. This is particularly useful if your
 program is run in non-interactive mode.
 The default is 0;
 
