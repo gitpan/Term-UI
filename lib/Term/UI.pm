@@ -9,7 +9,7 @@ use strict;
 BEGIN {
     use vars        qw[$VERSION $AUTOREPLY $VERBOSE $INVALID];
     $VERBOSE    =   1;
-    $VERSION    =   '0.04';    
+    $VERSION    =   '0.05';
     $INVALID    =   loc('Invalid selection, please try again: ');
 }
 
@@ -25,7 +25,7 @@ sub get_reply {
         prompt      => { default => '',     strict_type => 1, required => 1 },
         choices     => { default => [],     strict_type => 1 },
         multi       => { default => 0,      allow => [0, 1] },
-        prompt_add  => { default => '',     no_override => 1 },
+        prompt_add  => { default => undef,  no_override => 1 },
         allow       => { default => qr/.*/ },
     };
 
@@ -49,7 +49,7 @@ sub get_reply {
         $args->{prompt_add} = $args->{default};
     }
 
-    $args->{prompt} .= $args->{prompt_add}
+    $args->{prompt} .= defined($args->{prompt_add})
                                 ? ' ['. $args->{prompt_add} . ']: '
                                 : ' ';
 
@@ -267,7 +267,7 @@ For asking a yes or no question, there's even a shortcut.
 =head1 How it works
 
 Term::UI places itself at the back of the Term::ReadLine @ISA
-array, so you can call it's functions through your term object.
+array, so you can call its functions through your term object.
 
 =head1 Methods
 
@@ -352,7 +352,7 @@ indicate an option.
 If you prefix an option with C<no-> and do not give it a value, it
 will be set to 0.
 If it has no prefix and no value, it will be set to 1.
-Otherwise, it will be set to it's value. Note also that it can deal
+Otherwise, it will be set to its value. Note also that it can deal
 fine with single/double quoting issues.
 
 =head1 Global Variables

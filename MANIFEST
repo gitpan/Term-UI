@@ -3,3 +3,4 @@ MANIFEST
 README
 lib/Term/UI.pm
 t/01_Term_UI.t
+META.yml                                 Module meta-data (added by MakeMaker)
