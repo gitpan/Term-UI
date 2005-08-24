@@ -1,8 +1,8 @@
- ### Term::UI test suite ###
+### Term::UI test suite ###
 
 use strict;
 use lib qw[../lib lib];
-use Test::More tests => 7;
+use Test::More tests => 13;
 use Term::ReadLine;
 
 use_ok( 'Term::UI' ) or diag "Check.pm not found.  Dying", die;
@@ -10,6 +10,13 @@ use_ok( 'Term::UI' ) or diag "Check.pm not found.  Dying", die;
 ### make sure we can do this automatically ###
 $Term::UI::AUTOREPLY    = $Term::UI::AUTOREPLY  = 1;
 $Term::UI::VERBOSE      = $Term::UI::VERBOSE    = 0;
+
+### enable warnings
+$^W = 1;
+
+
+### perl core gets upset if we print stuff to STDOUT...
+close STDOUT if $ENV{PERL_CORE};
 
 ### so T::RL doesn't go nuts over no console
 BEGIN{ $ENV{LINES}=25; $ENV{COLUMNS}=80; }
@@ -53,6 +60,47 @@ my $tmpl = {
     is( $term->ask_yn( %$args ), 0, q[Asking yes/no with 'no' as default] );
 }
 
+
+# used to print: Use of uninitialized value in length at Term/UI.pm line 141.
+# [#13412]
+{   my $args = {
+        prompt  => 'Uninit warning on empty default',
+    };
+    
+    my $warnings = '';
+    local $SIG{__WARN__} = sub { $warnings .= "@_" };
+    
+    my $res = $term->get_reply( %$args );
+
+    ok( !$res,                  "Empty result on autoreply without default" );
+    is( $warnings, '',          "   No warnings with empty default" );
+    unlike( $warnings, qr|Term.UI|,
+                                "   No warnings from Term::UI" );
+
+}
+ 
+# used to print: Use of uninitialized value in string at Params/Check.pm
+# [#13412]
+{   my $args = {
+        prompt  => 'Undef warning on failing allow',
+        allow   => sub { 0 },
+    };
+    
+    my $warnings = '';
+    local $SIG{__WARN__} = sub { $warnings .= "@_" };
+    
+    my $res = $term->get_reply( %$args );
+
+    ok( !$res,                  "Empty result on autoreply without default" );
+    is( $warnings, '',          "   No warnings with failing allow" );
+    unlike( $warnings, qr|Params.Check|,
+                                "   No warnings from Params::Check" );
+
+}
+
+
+
+   
 {
     my $str =   q[command --no-foo --baz --bar=0 --quux=bleh ] .
                 q[--option="some'thing" -one-dash -single=blah' foo];
