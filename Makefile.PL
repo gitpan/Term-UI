@@ -10,6 +10,7 @@ WriteMakefile (
                         'Params::Check'             => 0,
                         'Term::ReadLine'            => 0,
                         'Locale::Maketext::Simple'  => 0,
+                        'Log::Message::Simple'      => 0,
                     },
     AUTHOR          => 'Jos Boumans <kane[at]cpan.org>',
 	ABSTRACT        => 'User interfaces via Term::ReadLine made easy'
