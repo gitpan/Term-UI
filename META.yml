@@ -1,18 +1,26 @@
 --- #YAML:1.0
-name:                Term-UI
-version:             0.20
-abstract:            User interfaces via Term::ReadLine made easy
-license:             ~
-author:              
+name:               Term-UI
+version:            0.22
+abstract:           User interfaces via Term::ReadLine made easy
+author:
     - Jos Boumans <kane[at]cpan.org>
-generated_by:        ExtUtils::MakeMaker version 6.42
-distribution_type:   module
-requires:     
-    Locale::Maketext::Simple:      0
-    Log::Message::Simple:          0
-    Params::Check:                 0
-    Term::ReadLine:                0
-    Test::More:                    0
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
+requires:
+    Locale::Maketext::Simple:  0
+    Log::Message::Simple:  0
+    Params::Check:        0
+    Term::ReadLine:       0
+    Test::More:           0
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.56
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
-    version: 1.3
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4
