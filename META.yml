@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Term-UI
-version:            0.24
+version:            0.26
 abstract:           User interfaces via Term::ReadLine made easy
 author:
     - Jos Boumans <kane[at]cpan.org>
