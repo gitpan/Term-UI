@@ -1,26 +1,28 @@
---- #YAML:1.0
-name:               Term-UI
-version:            0.26
-abstract:           User interfaces via Term::ReadLine made easy
+---
+abstract: 'User interfaces via Term::ReadLine made easy'
 author:
-    - Jos Boumans <kane[at]cpan.org>
-license:            unknown
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'Jos Boumans <kane[at]cpan.org>'
 build_requires:
-    ExtUtils::MakeMaker:  0
-requires:
-    Locale::Maketext::Simple:  0
-    Log::Message::Simple:  0
-    Params::Check:        0
-    Term::ReadLine:       0
-    Test::More:           0
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+  ExtUtils::MakeMaker: 0
+configure_requires:
+  ExtUtils::MakeMaker: 0
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112621'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Term-UI
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Locale::Maketext::Simple: 0
+  Log::Message::Simple: 0
+  Params::Check: 0
+  Term::ReadLine: 0
+  Test::More: 0
+resources:
+  repository: https://github.com/jib/term-ui
+version: 0.28
