@@ -25,4 +25,4 @@ requires:
   Test::More: 0
 resources:
   repository: https://github.com/jib/term-ui
-version: 0.28
+version: 0.30
