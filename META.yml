@@ -2,9 +2,10 @@
 abstract: 'User interfaces via Term::ReadLine made easy'
 author:
   - 'Jos Boumans <kane[at]cpan.org>'
-build_requires: {}
+build_requires:
+  ExtUtils::MakeMaker: 0
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.131560'
+generated_by: 'ExtUtils::MakeMaker version 6.7706, CPAN::Meta::Converter version 2.132620'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -14,6 +15,13 @@ no_index:
   directory:
     - t
     - inc
+requires:
+  Locale::Maketext::Simple: 0
+  Log::Message::Simple: 0
+  Params::Check: 0
+  Term::ReadLine: 0
+  Test::More: 0
+  if: 0
 resources:
   repository: git://github.com/jib/term-ui.git
-version: 0.36
+version: 0.38
