@@ -24,4 +24,4 @@ requires:
   if: 0
 resources:
   repository: git://github.com/jib/term-ui.git
-version: 0.40
+version: 0.42
